@@ -4,13 +4,17 @@
     <Modal v-if="modalActive" @close-modal="closeModal" />
     <h1>Reset Password</h1>
     <p>Forgot your passowrd? Enter your email to reset it</p>
-    <vee-form @submit="onSubmit" :validation-schema="schema">
-      <vee-field
-        type="email"
-        name="email"
-        placeholder="Email"
-        v-model="email"
-      />
+    <vee-form @submit="onSubmit" :validation-schema="schema" class="form">
+      <div class="input-container">
+        <EmailIcon class="input-icon" />
+        <vee-field
+          type="email"
+          name="email"
+          placeholder="Email"
+          v-model="email"
+        />
+      </div>
+
       <ErrorMessage class="error-message" name="email" />
       <button type="submit" class="signup-btn">Reset</button>
     </vee-form>
@@ -19,11 +23,13 @@
 <script lang="js">
 import Loading from "./sub_components/Loading.vue";
 import Modal from "./sub_components/Modal.vue";
+import EmailIcon from '../assets/icons/email.svg';
 export default {
   name: "ForgotPassword",
   components: {
     Loading,
-    Modal
+    Modal,
+    EmailIcon
   },
   data() {
     return {
@@ -60,9 +66,11 @@ form {
   gap: 15px;
   width: 100%;
   margin: 0;
+
   input {
     width: 350px;
     padding: 15px;
+    padding-left: 40px;
     background-color: #e7f1f6;
     color: #000;
     border: none;

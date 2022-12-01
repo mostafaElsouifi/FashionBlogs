@@ -87,6 +87,15 @@ export default {
     }
   }
 }
+.input-container {
+  position: relative;
+}
+.input-icon {
+  width: 20px !important;
+  position: absolute;
+  left: 8px;
+  top: 43px;
+}
 .error-message {
   color: red;
   width: 350px;

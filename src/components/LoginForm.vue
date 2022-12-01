@@ -12,9 +12,15 @@
     <h1>Login to FashionBlogs</h1>
 
     <vee-form @submit="onSubmit" :validation-schema="schema">
-      <vee-field type="email" name="email" placeholder="Email" />
+      <div class="input-container">
+        <EmailIcon class="input-icon" />
+        <vee-field type="email" name="email" placeholder="Email" />
+      </div>
       <ErrorMessage class="error-message" name="email" />
-      <vee-field type="password" name="password" placeholder="Password" />
+      <div class="input-container">
+        <LockIcon class="input-icon" />
+        <vee-field type="password" name="password" placeholder="Password" />
+      </div>
       <ErrorMessage class="error-message" name="password" />
       <router-link :to="{ name: 'forgot-password' }" class="link forgot-link"
         >Forgot Your Password</router-link
@@ -25,10 +31,14 @@
 </template>
 <script>
 import LeftArrow from "../assets/icons/left-arrow.svg";
+import EmailIcon from "../assets/icons/email.svg";
+import LockIcon from "../assets/icons/lock.svg";
 export default {
   name: "LoginForm",
   components: {
     LeftArrow,
+    EmailIcon,
+    LockIcon,
   },
   data() {
     return {
@@ -91,9 +101,13 @@ form {
   gap: 15px;
   width: 100%;
   margin: 0;
+  .input-icon {
+    top: 12px !important;
+  }
   input {
     width: 350px;
     padding: 15px;
+    padding-left: 37px;
     background-color: #e7f1f6;
     color: #000;
     border: none;

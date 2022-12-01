@@ -11,15 +11,31 @@
   <h1>Create Your FashionBlog Account</h1>
 
   <vee-form @submit="onSubmit" :validation-schema="schema">
-    <vee-field type="text" name="firstName" placeholder="First Name" />
+    <div class="input-container">
+      <PersonIcon class="input-icon" />
+      <vee-field type="text" name="firstName" placeholder="First Name" />
+    </div>
     <ErrorMessage class="error-message" name="firstName" />
-    <vee-field type="text" name="lastName" placeholder="Last Name" />
+    <div class="input-container">
+      <PersonIcon class="input-icon" />
+      <vee-field type="text" name="lastName" placeholder="Last Name" />
+    </div>
     <ErrorMessage class="error-message" name="lastName" />
-    <vee-field type="text" name="username" placeholder="Username" />
+
+    <div class="input-container">
+      <PersonIcon class="input-icon" />
+      <vee-field type="text" name="username" placeholder="Username" />
+    </div>
     <ErrorMessage class="error-message" name="username" />
-    <vee-field type="email" name="email" placeholder="Email" />
+    <div class="input-container">
+      <EmailIcon class="input-icon" id="emailIcon" />
+      <vee-field type="email" name="email" placeholder="Email" />
+    </div>
     <ErrorMessage class="error-message" name="email" />
-    <vee-field type="password" name="password" placeholder="Password" />
+    <div class="input-container">
+      <LockIcon class="input-icon" id="lockIcon" />
+      <vee-field type="password" name="password" placeholder="Password" />
+    </div>
     <ErrorMessage class="error-message" name="password" />
 
     <button type="submit" class="signup-btn">SIGN UP</button>
@@ -28,11 +44,18 @@
 <script>
 import { ErrorMessage } from "vee-validate";
 import LeftArrow from "../assets/icons/left-arrow.svg";
+import PersonIcon from "../assets/icons/person.svg";
+import EmailIcon from "../assets/icons/email.svg";
+import LockIcon from "../assets/icons/lock.svg";
+
 export default {
   name: "RegisterForm",
   components: {
     LeftArrow,
     ErrorMessage,
+    PersonIcon,
+    EmailIcon,
+    LockIcon,
   },
   data() {
     return {
@@ -98,9 +121,17 @@ form {
   gap: 15px;
   width: 100%;
   margin: 0;
+  .input-icon {
+    top: 14px !important;
+  }
+  #emailIcon,
+  #lockIcon {
+    top: 12px !important;
+  }
   input {
     width: 350px;
     padding: 15px;
+    padding-left: 38px;
     background-color: #e7f1f6;
     color: #000;
     border: none;

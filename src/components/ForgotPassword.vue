@@ -1,21 +1,29 @@
 <template>
   <div>
     <Loading v-if="displayLoading" />
+    <Modal v-if="modalActive" @close-modal="closeModal" />
     <h1>Reset Password</h1>
     <p>Forgot your passowrd? Enter your email to reset it</p>
     <vee-form @submit="onSubmit" :validation-schema="schema">
-      <vee-field type="email" name="email" placeholder="Email" />
+      <vee-field
+        type="email"
+        name="email"
+        placeholder="Email"
+        v-model="email"
+      />
       <ErrorMessage class="error-message" name="email" />
       <button type="submit" class="signup-btn">Reset</button>
     </vee-form>
   </div>
 </template>
-<script>
+<script lang="js">
 import Loading from "./sub_components/Loading.vue";
+import Modal from "./sub_components/Modal.vue";
 export default {
   name: "ForgotPassword",
   components: {
     Loading,
+    Modal
   },
   data() {
     return {
@@ -23,13 +31,20 @@ export default {
         email: "required|email",
       },
       displayLoading: false,
+      modalActive:null,
+      modalMessage:'',
+      email: ''
     };
   },
   methods: {
     onSubmit(values) {
       console.log(values);
       this.displayLoading = true;
+      this.modalActive = true
     },
+    closeModal(){
+      this.modalActive = !this.modalActive;
+    }
   },
 };
 </script>

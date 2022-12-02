@@ -1,4 +1,10 @@
 <template>
+  <Loading v-if="displayLoading" />
+  <Modal
+    :modalMessage="modalMessage"
+    v-if="displayModal"
+    @close-modal="closeModal"
+  />
   <div>
     <router-link :to="{ name: 'home' }" class="link back-home-link"
       ><LeftArrow class="arrow-icon" />Home Page</router-link
@@ -11,7 +17,7 @@
     </h3>
     <h1>Login to FashionBlogs</h1>
 
-    <vee-form @submit="onSubmit" :validation-schema="schema">
+    <vee-form @submit="login" :validation-schema="schema">
       <div class="input-container">
         <EmailIcon class="input-icon" />
         <vee-field type="email" name="email" placeholder="Email" />
@@ -33,12 +39,19 @@
 import LeftArrow from "../assets/icons/left-arrow.svg";
 import EmailIcon from "../assets/icons/email.svg";
 import LockIcon from "../assets/icons/lock.svg";
+import Loading from "./sub_components/Loading.vue";
+import Modal from "./sub_components/Modal.vue";
+import { auth } from "@/includes/firebase";
+import { mapWritableState } from "pinia";
+import useUserStore from "@/stores/user";
 export default {
   name: "LoginForm",
   components: {
     LeftArrow,
     EmailIcon,
     LockIcon,
+    Loading,
+    Modal,
   },
   data() {
     return {
@@ -46,11 +59,31 @@ export default {
         email: "required|email",
         password: "required",
       },
+      displayModal: false,
+      modalMessage: "",
+      displayLoading: false,
     };
   },
+  computed: {
+    ...mapWritableState(useUserStore, ["userLoggedIn"]),
+  },
   methods: {
-    onSubmit(values) {
-      console.log(values);
+    async login(values) {
+      try {
+        this.displayLoading = true;
+        await auth.signInWithEmailAndPassword(values.email, values.password);
+        this.displayLoading = false;
+        this.userLoggedIn = true;
+        this.$router.push({ name: "home" });
+      } catch (error) {
+        this.displayLoading = false;
+        this.displayModal = true;
+        this.modalMessage = error.message;
+      }
+    },
+    closeModal() {
+      this.displayModal = false;
+      this.modalMessage = "";
     },
   },
 };

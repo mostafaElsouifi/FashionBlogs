@@ -1,4 +1,5 @@
 <template>
+  <Loading v-if="displayLoading" />
   <router-link :to="{ name: 'home' }" class="link back-home-link"
     ><LeftArrow class="arrow-icon" />Home Page</router-link
   >
@@ -51,8 +52,11 @@ import LeftArrow from "../assets/icons/left-arrow.svg";
 import PersonIcon from "../assets/icons/person.svg";
 import EmailIcon from "../assets/icons/email.svg";
 import LockIcon from "../assets/icons/lock.svg";
-import { auth } from "@/includes/firebase";
+import { auth, db } from "@/includes/firebase";
 import Modal from "./sub_components/Modal.vue";
+import Loading from "./sub_components/Loading.vue";
+import { mapWritableState } from "pinia";
+import useUserStore from "../stores/user";
 
 export default {
   name: "RegisterForm",
@@ -63,6 +67,7 @@ export default {
     EmailIcon,
     LockIcon,
     Modal,
+    Loading,
   },
   data() {
     return {
@@ -73,22 +78,37 @@ export default {
         username: "required",
         password: "required|min:9",
       },
+      displayLoading: false,
       modalMessage: "",
       displayModal: false,
     };
   },
+  computed: {
+    ...mapWritableState(useUserStore, ["userLoggedIn"]),
+  },
   methods: {
     async onSubmit(values) {
+      this.displayLoading = true;
       try {
         const userCred = await auth.createUserWithEmailAndPassword(
           values.email,
           values.password
         );
-        console.log(userCred);
+        const newUser = await db.collection("user").doc(userCred.user.uid);
+        await newUser.set({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          username: values.username,
+          email: values.email,
+        });
+        this.displayLoading = false;
+        this.userLoggedIn = true;
+        this.$router.push({ name: "home" });
       } catch (error) {
         //console.log(error.code);
         this.modalMessage = error.message;
         this.displayModal = true;
+        this.displayLoading = false;
       }
     },
     closeModal() {
@@ -172,11 +192,4 @@ form {
     cursor: pointer;
   }
 }
-// .alert-box {
-//   width: 350px;
-//   padding: 15px;
-//   padding-left: 38px;
-//   background-color: blue;
-//   color: #fff;
-// }
 </style>

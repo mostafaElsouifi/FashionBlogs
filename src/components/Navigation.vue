@@ -11,8 +11,11 @@
           <router-link :to="{ name: 'home' }" class="link">Home</router-link>
           <router-link :to="{ name: 'blogs' }" class="link">Blogs</router-link>
           <router-link to="#" class="link">Create Post</router-link>
-          <router-link :to="{ name: 'login' }" class="link"
+          <router-link v-if="!userLoggedIn" :to="{ name: 'login' }" class="link"
             >Login / Register</router-link
+          >
+          <span v-else class="link" @click="logOut" :to="{ name: 'home' }"
+            >Logout</span
           >
         </ul>
       </div>
@@ -21,16 +24,24 @@
     <!--menu for mobile nav-->
     <transition name="mobileNav">
       <ul class="mobile-nav" v-show="mobileNav">
-        <router-link to="#" class="link">Home</router-link>
-        <router-link to="#" class="link">Blogs</router-link>
+        <router-link :to="{ name: 'home' }" class="link">Home</router-link>
+        <router-link :to="{ name: 'blogs' }" class="link">Blogs</router-link>
         <router-link to="#" class="link">Create Post</router-link>
-        <router-link to="#" class="link">Login / Register</router-link>
+        <router-link v-if="!userLoggedIn" :to="{ name: 'login' }" class="link"
+          >Login / Register</router-link
+        >
+        <router-link v-else class="link" :to="{ name: 'home' }" @click="logOut"
+          >Logout</router-link
+        >
       </ul>
     </transition>
   </header>
 </template>
 <script>
 import menuIcon from "../assets/icons/menu.svg";
+import { mapWritableState } from "pinia";
+import useUserStore from "../stores/user";
+import { auth } from "../includes/firebase";
 export default {
   name: "navigation",
   components: {
@@ -47,6 +58,9 @@ export default {
     window.addEventListener("resize", this.checkScreen);
     this.checkScreen();
   },
+  computed: {
+    ...mapWritableState(useUserStore, ["userLoggedIn"]),
+  },
   methods: {
     checkScreen() {
       this.windowWidth = window.innerWidth;
@@ -59,6 +73,12 @@ export default {
     },
     toggleMobileNav() {
       this.mobileNav = !this.mobileNav;
+    },
+    async logOut() {
+      await auth.signOut();
+
+      this.userLoggedIn = false;
+      this.$router.push({ name: "home" });
     },
   },
 };

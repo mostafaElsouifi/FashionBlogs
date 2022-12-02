@@ -1,17 +1,17 @@
 <template>
   <Navigation v-if="navigation" />
   <router-view />
-  <Footer v-if="navigation" />
+  <FooterApp v-if="navigation" />
 </template>
 <script>
 import Navigation from "./components/Navigation.vue";
-import Footer from "./components/Footer.vue";
+import FooterApp from "./components/Footer.vue";
 
 export default {
   name: "App",
   components: {
     Navigation,
-    Footer,
+    FooterApp,
   },
   data() {
     return {

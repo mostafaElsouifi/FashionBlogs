@@ -33,7 +33,7 @@ import Instagram from "../assets/icons/instagram.svg";
 import Facebook from "../assets/icons/facebook.svg";
 import Twitter from "../assets/icons/twitter.svg";
 export default {
-  name: "footer",
+  name: "FooterApp",
   components: {
     Youtube,
     Facebook,

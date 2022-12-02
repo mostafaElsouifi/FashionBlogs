@@ -39,6 +39,7 @@ export default {
     background-color: #fff;
     p {
       text-align: center;
+      margin-bottom: 20px;
     }
     button {
       align-self: center;

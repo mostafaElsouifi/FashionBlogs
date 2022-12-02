@@ -9,7 +9,11 @@
     </router-link>
   </h3>
   <h1>Create Your FashionBlog Account</h1>
-
+  <Modal
+    v-if="displayModal"
+    :modalMessage="modalMessage"
+    @close-modal="closeModal"
+  />
   <vee-form @submit="onSubmit" :validation-schema="schema">
     <div class="input-container">
       <PersonIcon class="input-icon" />
@@ -47,6 +51,8 @@ import LeftArrow from "../assets/icons/left-arrow.svg";
 import PersonIcon from "../assets/icons/person.svg";
 import EmailIcon from "../assets/icons/email.svg";
 import LockIcon from "../assets/icons/lock.svg";
+import { auth } from "@/includes/firebase";
+import Modal from "./sub_components/Modal.vue";
 
 export default {
   name: "RegisterForm",
@@ -56,6 +62,7 @@ export default {
     PersonIcon,
     EmailIcon,
     LockIcon,
+    Modal,
   },
   data() {
     return {
@@ -66,11 +73,27 @@ export default {
         username: "required",
         password: "required|min:9",
       },
+      modalMessage: "",
+      displayModal: false,
     };
   },
   methods: {
-    onSubmit(values) {
-      console.log(values);
+    async onSubmit(values) {
+      try {
+        const userCred = await auth.createUserWithEmailAndPassword(
+          values.email,
+          values.password
+        );
+        console.log(userCred);
+      } catch (error) {
+        //console.log(error.code);
+        this.modalMessage = error.message;
+        this.displayModal = true;
+      }
+    },
+    closeModal() {
+      this.displayModal = false;
+      this.modalMessage = "";
     },
   },
 };
@@ -149,4 +172,11 @@ form {
     cursor: pointer;
   }
 }
+// .alert-box {
+//   width: 350px;
+//   padding: 15px;
+//   padding-left: 38px;
+//   background-color: blue;
+//   color: #fff;
+// }
 </style>

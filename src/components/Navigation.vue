@@ -15,10 +15,44 @@
           <router-link v-if="!userLoggedIn" :to="{ name: 'login' }" class="link"
             >Login / Register</router-link
           >
-          <span v-else class="link" @click="logOut" :to="{ name: 'home' }"
-            >Logout</span
-          >
         </ul>
+        <div
+          v-if="userLoggedIn && !mobile"
+          class="profile"
+          ref="profile"
+          @click="toggleProfileMenu"
+        >
+          <span>{{ userProfile.logoText }}</span>
+          <div v-show="showProfileMenu" class="profile-menu">
+            <div class="info">
+              <p class="user-logo">{{ userProfile.logoText }}</p>
+              <div class="right">
+                <p>{{ userProfile.username }}</p>
+              </div>
+            </div>
+
+            <div class="options">
+              <div class="option">
+                <router-link to="#">
+                  <PersonIcon class="icon" />
+                  profile
+                </router-link>
+              </div>
+              <div class="option">
+                <router-link to="#">
+                  <AdminIcon class="icon" />
+                  Admin
+                </router-link>
+              </div>
+              <div class="option" @click.prevent="signOut">
+                <div>
+                  <SignOut class="icon" />
+                  Sign out
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </nav>
     <menuIcon class="menu-icon" @click="toggleMobileNav" v-show="mobile" />
@@ -31,8 +65,8 @@
         <router-link v-if="!userLoggedIn" :to="{ name: 'login' }" class="link"
           >Login / Register</router-link
         >
-        <router-link v-else class="link" :to="{ name: 'home' }" @click="logOut"
-          >Logout</router-link
+        <router-link v-else class="link" :to="{ name: 'home' }" @click="signOut"
+          >SignOut</router-link
         >
       </ul>
     </transition>
@@ -40,6 +74,9 @@
 </template>
 <script>
 import menuIcon from "../assets/icons/menu.svg";
+import PersonIcon from "@/assets/icons/person.svg";
+import AdminIcon from "@/assets/icons/admin.svg";
+import SignOut from "@/assets/icons/signout.svg";
 import Loading from "@/components/sub_components/Loading.vue";
 import { mapWritableState } from "pinia";
 import useUserStore from "../stores/user";
@@ -48,6 +85,9 @@ export default {
   name: "navigation",
   components: {
     menuIcon,
+    PersonIcon,
+    AdminIcon,
+    SignOut,
     Loading,
   },
   data() {
@@ -56,6 +96,7 @@ export default {
       mobileNav: null,
       windowWidth: null,
       displayLoading: null,
+      showProfileMenu: null,
     };
   },
   created() {
@@ -63,7 +104,7 @@ export default {
     this.checkScreen();
   },
   computed: {
-    ...mapWritableState(useUserStore, ["userLoggedIn"]),
+    ...mapWritableState(useUserStore, ["userLoggedIn", "userProfile"]),
   },
   methods: {
     checkScreen() {
@@ -78,12 +119,17 @@ export default {
     toggleMobileNav() {
       this.mobileNav = !this.mobileNav;
     },
-    async logOut() {
+    async signOut() {
       this.displayLoading = true;
       await auth.signOut();
       this.userLoggedIn = false;
       this.displayLoading = false;
       this.$router.push({ name: "home" });
+    },
+    toggleProfileMenu(e) {
+      if (e.target === this.$refs.profile) {
+        this.showProfileMenu = !this.showProfileMenu;
+      }
     },
   },
 };
@@ -119,6 +165,70 @@ nav {
       }
       .link:last-child {
         margin-right: 0;
+      }
+    }
+
+    .profile {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      background-color: #303030;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      span {
+        pointer-events: none;
+      }
+      .profile-menu {
+        position: absolute;
+        top: 60px;
+        right: 0px;
+        width: 250px;
+        height: auto;
+        background-color: #303030;
+        padding: 15px;
+        color: #fff;
+        z-index: 102;
+        .info {
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid #fff;
+          margin-bottom: 10px;
+          padding-bottom: 10px;
+          .user-logo {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            color: #303030;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .right {
+            margin-left: 12px;
+          }
+        }
+        .options {
+          .option a,
+          .option div {
+            padding: 7px 0px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            &:hover {
+              color: #bb4991;
+            }
+            .icon {
+              margin-right: 10px;
+              color: white;
+            }
+          }
+        }
       }
     }
   }

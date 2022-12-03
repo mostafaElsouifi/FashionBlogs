@@ -6,12 +6,20 @@
 <script>
 import Navigation from "./components/Navigation.vue";
 import FooterApp from "./components/Footer.vue";
-
+import { auth } from "./includes/firebase";
+import { mapWritableState } from "pinia";
+import useUserStore from "@/stores/user";
 export default {
   name: "App",
   components: {
     Navigation,
     FooterApp,
+  },
+  created() {
+    if (auth.currentUser) this.userLoggedIn = true;
+  },
+  computed: {
+    ...mapWritableState(useUserStore, ["userLoggedIn"]),
   },
   data() {
     return {

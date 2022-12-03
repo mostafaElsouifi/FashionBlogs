@@ -7,7 +7,7 @@
 import Navigation from "./components/Navigation.vue";
 import FooterApp from "./components/Footer.vue";
 import { auth } from "./includes/firebase";
-import { mapWritableState } from "pinia";
+import { mapWritableState, mapActions } from "pinia";
 import useUserStore from "@/stores/user";
 export default {
   name: "App",
@@ -17,6 +17,8 @@ export default {
   },
   created() {
     if (auth.currentUser) this.userLoggedIn = true;
+    console.log(auth.currentUser);
+    this.getCurrentUser();
   },
   computed: {
     ...mapWritableState(useUserStore, ["userLoggedIn"]),
@@ -27,6 +29,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(useUserStore, ["getCurrentUser"]),
     checkRoute() {
       if (
         this.$route.name === "login" ||

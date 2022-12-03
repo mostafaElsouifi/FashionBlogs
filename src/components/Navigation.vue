@@ -1,4 +1,5 @@
 <template>
+  <Loading v-if="displayLoading" />
   <header>
     <nav class="container">
       <div class="branding">
@@ -39,6 +40,7 @@
 </template>
 <script>
 import menuIcon from "../assets/icons/menu.svg";
+import Loading from "@/components/sub_components/Loading.vue";
 import { mapWritableState } from "pinia";
 import useUserStore from "../stores/user";
 import { auth } from "../includes/firebase";
@@ -46,12 +48,14 @@ export default {
   name: "navigation",
   components: {
     menuIcon,
+    Loading,
   },
   data() {
     return {
       mobile: null,
       mobileNav: null,
       windowWidth: null,
+      displayLoading: null,
     };
   },
   created() {
@@ -75,9 +79,10 @@ export default {
       this.mobileNav = !this.mobileNav;
     },
     async logOut() {
+      this.displayLoading = true;
       await auth.signOut();
-
       this.userLoggedIn = false;
+      this.displayLoading = false;
       this.$router.push({ name: "home" });
     },
   },

@@ -33,7 +33,7 @@
 
             <div class="options">
               <div class="option">
-                <router-link to="#">
+                <router-link :to="{ name: 'profile' }">
                   <PersonIcon class="icon" />
                   profile
                 </router-link>

@@ -42,7 +42,7 @@ import LockIcon from "../assets/icons/lock.svg";
 import Loading from "./sub_components/Loading.vue";
 import Modal from "./sub_components/Modal.vue";
 import { auth } from "@/includes/firebase";
-import { mapWritableState } from "pinia";
+import { mapWritableState, mapActions } from "pinia";
 import useUserStore from "@/stores/user";
 export default {
   name: "LoginForm",
@@ -68,12 +68,14 @@ export default {
     ...mapWritableState(useUserStore, ["userLoggedIn"]),
   },
   methods: {
+    ...mapActions(useUserStore, ["getCurrentUser"]),
     async login(values) {
+      this.displayLoading = true;
       try {
-        this.displayLoading = true;
         await auth.signInWithEmailAndPassword(values.email, values.password);
         this.displayLoading = false;
         this.userLoggedIn = true;
+        await this.getCurrentUser();
         this.$router.push({ name: "home" });
       } catch (error) {
         this.displayLoading = false;

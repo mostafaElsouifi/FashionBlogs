@@ -1,11 +1,12 @@
 <template>
+  <Loading v-if="displayLoading" />
   <div class="modal">
     <div class="modal-content">
       <div class="close-icon" @click="closeForm">
         <CloseIcon />
       </div>
       <h1>Update Profile</h1>
-      <vee-form @submit="onSubmit" :validation-schema="schema">
+      <vee-form @submit="updateData" :validation-schema="schema">
         <div class="input-container">
           <label>First Name: </label>
           <vee-field
@@ -48,15 +49,51 @@
 
 <script>
 import CloseIcon from "@/assets/icons/close.svg";
+import Loading from "./Loading.vue";
+import { db } from "@/includes/firebase";
+import { mapWritableState } from "pinia";
+import useUserStore from "@/stores/user";
 export default {
-  props: ["userProfile"],
-  components: { CloseIcon },
+  components: { CloseIcon, Loading },
   data() {
-    return {};
+    return {
+      schema: {
+        firstName: "required",
+        lastName: "required",
+        username: "required",
+        email: "required|email",
+      },
+      displayLoading: false,
+    };
+  },
+  computed: {
+    ...mapWritableState(useUserStore, ["userProfile"]),
   },
   methods: {
     closeForm() {
       this.$emit("close-form");
+    },
+    async updateData(values) {
+      try {
+        this.displayLoading = true;
+        const dbDoc = await db.collection("user").doc(this.userProfile.ID);
+        await dbDoc.update({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          username: values.username,
+          email: values.email,
+        });
+        // update store
+        this.userProfile.firstName = values.firstName;
+        this.userProfile.lastName = values.lastName;
+        this.userProfile.username = values.username;
+        this.userProfile.email = values.email;
+        this.displayLoading = false;
+        this.$emit("close-form");
+      } catch (error) {
+        this.displayLoading = false;
+        console.log(error.message);
+      }
     },
   },
 };

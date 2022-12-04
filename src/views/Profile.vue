@@ -1,9 +1,5 @@
 <template>
-  <FormModal
-    v-if="displayForm"
-    :userProfile="userProfile"
-    @close-form="displayForm = false"
-  />
+  <UpdateProfileModal v-if="displayForm" @close-form="displayForm = false" />
   <div class="profile-container">
     <div class="left">
       <div class="user-logo">{{ userProfile.logoText }}</div>
@@ -43,7 +39,7 @@ import useUserStore from "@/stores/user";
 import useBlogsStore from "@/stores/blogs";
 import BlogCard from "@/components/BlogCard.vue";
 import ToggleEdit from "@/components/sub_components/ToggleEdit.vue";
-import FormModal from "@/components/sub_components/FormModal.vue";
+import UpdateProfileModal from "@/components/sub_components/UpdateProfileModal.vue";
 import UserIcon from "@/assets/icons/user.svg";
 import AdminIcon from "@/assets/icons/admin2.svg";
 export default {
@@ -57,7 +53,7 @@ export default {
   components: {
     BlogCard,
     ToggleEdit,
-    FormModal,
+    UpdateProfileModal,
     UserIcon,
     AdminIcon,
   },

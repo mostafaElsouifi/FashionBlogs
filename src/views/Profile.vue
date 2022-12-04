@@ -1,4 +1,9 @@
 <template>
+  <FormModal
+    v-if="displayForm"
+    :userProfile="userProfile"
+    @close-form="displayForm = false"
+  />
   <div class="profile-container">
     <div class="left">
       <div class="user-logo">{{ userProfile.logoText }}</div>
@@ -12,7 +17,7 @@
       <p><span>Last Name: </span>{{ userProfile.lastName }}</p>
       <p><span>Username: </span>{{ userProfile.username }}</p>
       <p><span>Email:</span>{{ userProfile.email }}</p>
-      <button>Edit</button>
+      <button @click="displayForm = true">Edit</button>
     </div>
     <div class="right">
       <h1>Activity</h1>
@@ -38,6 +43,7 @@ import useUserStore from "@/stores/user";
 import useBlogsStore from "@/stores/blogs";
 import BlogCard from "@/components/BlogCard.vue";
 import ToggleEdit from "@/components/sub_components/ToggleEdit.vue";
+import FormModal from "@/components/sub_components/FormModal.vue";
 import UserIcon from "@/assets/icons/user.svg";
 import AdminIcon from "@/assets/icons/admin2.svg";
 export default {
@@ -45,11 +51,13 @@ export default {
   data() {
     return {
       toggleEditValue: false,
+      displayForm: false,
     };
   },
   components: {
     BlogCard,
     ToggleEdit,
+    FormModal,
     UserIcon,
     AdminIcon,
   },

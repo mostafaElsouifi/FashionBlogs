@@ -225,6 +225,11 @@ nav {
             }
             .icon {
               margin-right: 10px;
+              svg {
+                path {
+                  fill: #fff;
+                }
+              }
               color: white;
             }
           }

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { auth, db } from "@/includes/firebase";
-
+import helpers from "../includes/helpers";
 export default defineStore("user", {
   state: () => {
     return {
@@ -25,8 +25,12 @@ export default defineStore("user", {
           .doc(auth.currentUser.uid);
         const currentUserResponse = await currentUser.get();
         const currentUserData = await currentUserResponse.data();
-        this.userProfile.firstName = currentUserData.firstName;
-        this.userProfile.lastName = currentUserData.lastName;
+        this.userProfile.firstName = helpers.capFirstLetter(
+          currentUserData.firstName
+        );
+        this.userProfile.lastName = helpers.capFirstLetter(
+          currentUserData.lastName
+        );
         this.userProfile.fullName =
           this.userProfile.firstName + " " + this.userProfile.lastName;
         this.userProfile.logoText =

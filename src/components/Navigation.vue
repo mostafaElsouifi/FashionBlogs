@@ -11,7 +11,9 @@
         <ul v-show="!mobile">
           <router-link :to="{ name: 'home' }" class="link">Home</router-link>
           <router-link :to="{ name: 'blogs' }" class="link">Blogs</router-link>
-          <router-link to="#" class="link">Create Post</router-link>
+          <router-link :to="{ name: 'createPost' }" class="link"
+            >Create Post</router-link
+          >
           <router-link v-if="!userLoggedIn" :to="{ name: 'login' }" class="link"
             >Login / Register</router-link
           >
@@ -39,7 +41,7 @@
                 </router-link>
               </div>
               <div class="option">
-                <router-link to="#">
+                <router-link :to="{ name: 'admin' }">
                   <AdminIcon class="icon" />
                   Admin
                 </router-link>
@@ -102,6 +104,13 @@ export default {
   created() {
     window.addEventListener("resize", this.checkScreen);
     this.checkScreen();
+  },
+  mounted() {
+    //need solution to close profile menue when click on the page
+    // document.addEventListener("click", (e) => {
+    //   console.dir(e.target);
+    //   this.showProfileMenu = false;
+    // });
   },
   computed: {
     ...mapWritableState(useUserStore, ["userLoggedIn", "userProfile"]),

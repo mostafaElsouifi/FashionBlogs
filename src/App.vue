@@ -113,5 +113,10 @@ export default {
   align-self: start;
   font-size: 0.9rem;
 }
-/** style forms  */
+
+// classes applied from vueup editor
+.ql-editor {
+  height: 500px !important;
+  overflow: scroll !important;
+}
 </style>

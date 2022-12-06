@@ -123,6 +123,7 @@ export default {
   }
   p {
     display: flex;
+    align-items: center;
     gap: 10px;
     font-weight: 600;
     color: #283d47;

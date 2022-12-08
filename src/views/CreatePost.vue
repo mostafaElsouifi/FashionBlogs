@@ -1,4 +1,10 @@
 <template>
+  <preview-photo-modal
+    v-if="displayPreview"
+    :photoName="newBlog.blogPhotoName"
+    :photoUrl="newBlog.blogPhotoFileUrl"
+    @close-preview="closePreview"
+  />
   <Modal
     v-if="displayModal"
     :modalMessage="modalMessage"
@@ -19,26 +25,35 @@
           type="file"
           id="blog-photo"
           ref="blogPhoto"
+          @change="uploadPhoto"
           accept=".png,.jpeg,.jpg"
         />
         <button
           class="preview"
+          @click="displayPreviewModal"
           :class="{ 'disabled-button': !newBlog.blogPhotoPreview }"
-          :disabled="newBlog.blogPhotoPreview"
         >
           Preview Photo
         </button>
-        <span>File Choosen :</span>
+        <span>File Choosen : {{ newBlog.blogPhotoName }}</span>
       </div>
     </div>
 
     <div id="editor">
-      <QuillEditor theme="snow" toolbar="full" ref="editor" />
+      <QuillEditor
+        theme="snow"
+        toolbar="full"
+        ref="editor"
+        @text-change="updateBlogHtml"
+        :modules="modules"
+      />
     </div>
 
     <div class="blog-actions">
       <button @click="publishBlog">Publish Blog</button>
-      <router-link class="router-button" to="#">Post Preview</router-link>
+      <router-link class="router-button" :to="{ name: 'blogPreview' }"
+        >Post Preview</router-link
+      >
     </div>
   </div>
 </template>
@@ -46,8 +61,11 @@
 import { mapWritableState } from "pinia";
 import useBlogsStore from "@/stores/blogs.js";
 import { QuillEditor } from "@vueup/vue-quill";
+import BlotFormatter from "quill-blot-formatter";
+
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import Modal from "@/components/sub_components/modal.vue";
+import PreviewPhotoModal from "../components/sub_components/PreviewPhotoModal.vue";
 
 export default {
   name: "CreatePost",
@@ -56,24 +74,50 @@ export default {
       modalMessage: "",
       errorMessage: "",
       displayModal: null,
+      displayPreview: null,
+      modules: {
+        name: "blot formater",
+        module: BlotFormatter,
+        oprions: {},
+      },
     };
   },
   components: {
     QuillEditor,
     Modal,
+    PreviewPhotoModal,
   },
   mounted() {},
   computed: { ...mapWritableState(useBlogsStore, ["newBlog"]) },
   methods: {
+    updateBlogHtml() {
+      this.newBlog.blogHtml = this.$refs.editor.getHTML();
+    },
+    uploadPhoto() {
+      const file = this.$refs.blogPhoto.files[0];
+      if (file) {
+        this.newBlog.blogPhotoFileUrl = URL.createObjectURL(file);
+        this.newBlog.blogPhotoName = file.name;
+        this.newBlog.blogPhotoPreview = true;
+        console.log(this.newBlog.blogPhotoFileUrl);
+      }
+    },
     publishBlog() {
       if (!this.$refs.editor.getContents(1).ops.length) {
         this.modalMessage = "No Content to publish!";
         this.displayModal = true;
       }
+      console.log(this.$refs.editor.getHTML());
     },
     closeModal() {
       this.displayModal = false;
       this.modalMessage = "";
+    },
+    displayPreviewModal() {
+      this.displayPreview = true;
+    },
+    closePreview() {
+      this.displayPreview = false;
     },
   },
 };
@@ -134,10 +178,20 @@ export default {
     border: none;
     outline: none;
     cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
   }
+}
+
+button:hover {
+  opacity: 0.7;
 }
 .disabled-button {
   opacity: 0.4;
   cursor: not-allowed !important;
+  &:hover {
+    opacity: 0.4 !important;
+  }
 }
 </style>

@@ -5,9 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 import { auth } from "./includes/firebase";
 import "./assets/main.css";
-import { QuillEditor } from "@vueup/vue-quill";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import "@vueup/vue-quill/dist/vue-quill.bubble.css";
+
 let app;
 auth.onAuthStateChanged(() => {
   if (!app) {
@@ -15,7 +13,7 @@ auth.onAuthStateChanged(() => {
     app.use(createPinia());
     app.use(router);
     app.use(veeValidatePlugin);
-    app.component("QuillEditor", QuillEditor);
+
     app.mount("#app");
   }
 });

@@ -116,7 +116,7 @@ export default {
 
 // classes applied from vueup editor
 .ql-editor {
-  height: 500px !important;
+  height: 60vh !important;
   overflow: scroll !important;
 }
 </style>

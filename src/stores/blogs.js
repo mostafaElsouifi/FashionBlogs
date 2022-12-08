@@ -1,8 +1,17 @@
 import { defineStore } from "pinia";
 
-export default defineStore("counter", {
+export default defineStore("blogs", {
   state: () => {
     return {
+      newBlog: {
+        blogHtml: "",
+        blogTitle: "",
+        blogPhotoName: "",
+        blogPhotoFileUrl: null,
+        blogPhotoPreview: null,
+      },
+
+      editPost: null,
       blogPosts: [
         {
           title: "The 11 Standout Models of Spring-Summer 2023",

@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 const firebaseConfig = {
-  apiKey: "AIzaSyAtpuFumNQn50z2UCYFGvOb5QdqgLFQBYs",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "fashionblogs-a5e58.firebaseapp.com",
   projectId: "fashionblogs-a5e58",
   storageBucket: "fashionblogs-a5e58.appspot.com",

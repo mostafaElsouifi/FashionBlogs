@@ -5,7 +5,7 @@
       <BlogCard
         v-for="(post, index) in blogCards"
         :key="index"
-        :edit="toggleEditValue"
+        :edit="editMode"
         :post="post"
       />
     </div>
@@ -15,7 +15,8 @@
 import BlogCard from "@/components/BlogCard.vue";
 import ToggleEdit from "@/components/sub_components/ToggleEdit.vue";
 import useBlogsStore from "@/stores/blogs";
-import { mapState } from "pinia";
+import useUserStore from "@/stores/user";
+import { mapState, mapWritableState } from "pinia";
 export default {
   name: "Blogs",
   emits: ["toggleEdit"],
@@ -24,17 +25,16 @@ export default {
     ToggleEdit,
   },
   data() {
-    return {
-      toggleEditValue: false,
-    };
+    return {};
   },
   computed: {
     ...mapState(useBlogsStore, ["blogCards"]),
+    ...mapWritableState(useUserStore, ["editMode"]),
   },
 
   methods: {
     toggleEdit() {
-      this.toggleEditValue = !this.toggleEditValue;
+      this.editMode = !this.editMode;
     },
   },
 };

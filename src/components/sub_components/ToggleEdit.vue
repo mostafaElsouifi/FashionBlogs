@@ -8,13 +8,31 @@
   </div>
 </template>
 <script>
+import { mapWritableState } from "pinia";
+import useUserStore from "@/stores/user";
 export default {
   name: "ToggleEdit",
+  mounted() {
+    this.toggleValue = this.editMode;
+  },
+  data() {
+    return {
+      toggleValue: "false",
+    };
+  },
+  computed: {
+    ...mapWritableState(useUserStore, ["editMode"]),
+  },
   methods: {
     toggleEdit() {
       this.$emit("toggle-edit");
     },
   },
+  // watch: {
+  //   toggleValue() {
+  //     this.editMode = this.toggleValue;
+  //   },
+  //},
 };
 </script>
 <style lang="scss" scoped>

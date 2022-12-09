@@ -5,6 +5,7 @@ export default defineStore("user", {
   state: () => {
     return {
       userLoggedIn: false,
+      editMode: false,
       userProfile: {
         firstName: "",
         lastName: "",

@@ -116,6 +116,7 @@ export default {
 
 // classes applied from vueup editor
 .ql-editor {
+  width: 100% !important;
   height: 60vh !important;
   img {
     height: 100% !important;

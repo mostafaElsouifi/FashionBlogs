@@ -12,18 +12,25 @@
   />
   <div class="container">
     <div class="blog-info">
-      <input
-        v-model="newBlog.blogTitle"
-        type="text"
-        name="blogTitle"
-        class="blog-title"
-        placeholder="Enter blog title"
-      />
+      <div class="blog-title-section">
+        <ExclamationMark class="warning-icon" v-if="warningBlogTitle" />
+        <input
+          v-model="newBlog.blogTitle"
+          @input="checkBlogTitle"
+          :class="{ warning: warningBlogTitle }"
+          type="text"
+          name="blogTitle"
+          class="blog-title"
+          placeholder="Enter blog title"
+          id="blogTitle"
+        />
+      </div>
+
       <div class="upload-file">
-        <label for="blog-photo">Upload Cover Photo</label>
+        <label for="blogPhoto">Upload Cover Photo</label>
         <input
           type="file"
-          id="blog-photo"
+          id="blogPhoto"
           ref="blogPhoto"
           @change="uploadPhoto"
           accept=".png,.jpeg,.jpg"
@@ -35,7 +42,10 @@
         >
           Preview Photo
         </button>
-        <span>File Choosen : {{ newBlog.blogPhotoName }}</span>
+        <span :class="{ warning: warningCoverPhoto }">
+          <ExclamationMark class="warning-icon" v-if="warningCoverPhoto" />
+          File Choosen : {{ newBlog.blogPhotoName }}
+        </span>
       </div>
     </div>
 
@@ -51,7 +61,7 @@
 
     <div class="blog-actions">
       <button @click="publishBlog">Publish Blog</button>
-      <router-link class="router-button" :to="{ name: 'blogPreview' }"
+      <router-link class="router-button" :to="{ name: 'postPreview' }"
         >Post Preview</router-link
       >
     </div>
@@ -64,9 +74,9 @@ import { QuillEditor } from "@vueup/vue-quill";
 import BlotFormatter from "quill-blot-formatter";
 
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import Modal from "@/components/sub_components/modal.vue";
+import Modal from "@/components/sub_components/Modal.vue";
 import PreviewPhotoModal from "../components/sub_components/PreviewPhotoModal.vue";
-
+import ExclamationMark from "@/assets/icons/exclamation-mark.svg";
 export default {
   name: "CreatePost",
   data() {
@@ -75,6 +85,8 @@ export default {
       errorMessage: "",
       displayModal: null,
       displayPreview: null,
+      warningBlogTitle: false,
+      warningCoverPhoto: false,
       modules: {
         name: "blot formater",
         module: BlotFormatter,
@@ -86,16 +98,35 @@ export default {
     QuillEditor,
     Modal,
     PreviewPhotoModal,
+    ExclamationMark,
   },
   mounted() {},
   computed: { ...mapWritableState(useBlogsStore, ["newBlog"]) },
   methods: {
+    checkBlogTitle() {
+      if (this.newBlog.blogTitle.trim() === "") {
+        this.warningBlogTitle = true;
+        document.getElementById("blogTitle").placeholder = "required..";
+
+        document.getElementById("blogTitle").scrollIntoView();
+      } else {
+        this.warningBlogTitle = false;
+      }
+    },
+    checkCoverPhoto() {
+      if (!this.$refs.blogPhoto.files[0]) {
+        this.warningCoverPhoto = true;
+      } else {
+        this.warningCoverPhoto = false;
+      }
+    },
     updateBlogHtml() {
       this.newBlog.blogHtml = this.$refs.editor.getHTML();
     },
     uploadPhoto() {
       const file = this.$refs.blogPhoto.files[0];
       if (file) {
+        this.warningCoverPhoto = false;
         this.newBlog.blogPhotoFileUrl = URL.createObjectURL(file);
         this.newBlog.blogPhotoName = file.name;
         this.newBlog.blogPhotoPreview = true;
@@ -103,11 +134,12 @@ export default {
       }
     },
     publishBlog() {
+      this.checkBlogTitle();
+      this.checkCoverPhoto();
       if (!this.$refs.editor.getContents(1).ops.length) {
         this.modalMessage = "No Content to publish!";
         this.displayModal = true;
       }
-      console.log(this.$refs.editor.getHTML());
     },
     closeModal() {
       this.displayModal = false;
@@ -133,15 +165,23 @@ export default {
     align-items: center;
     margin-bottom: 20px;
     margin-left: 20px;
-    .blog-title {
-      border: none;
-      border-bottom: 1px solid #303030;
-      margin-right: 30px;
-      padding: 10px 5px;
-      &:focus {
-        outline: none;
+    .blog-title-section {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .blog-title {
+        border: none;
+        border-bottom: 1px solid #303030;
+
+        margin-right: 30px;
+        padding: 10px 5px;
+        &:focus {
+          outline: none;
+        }
       }
     }
+
     .upload-file {
       display: flex;
       flex-wrap: wrap;
@@ -192,6 +232,16 @@ button:hover {
   cursor: not-allowed !important;
   &:hover {
     opacity: 0.4 !important;
+  }
+}
+
+/* classes */
+.warning {
+  border-bottom: 1px solid #e74c3c !important;
+  color: #e74c3c;
+  ::placeholder {
+    color: #e74c3c !important;
+    opacity: 1;
   }
 }
 </style>

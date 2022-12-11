@@ -5,7 +5,7 @@ import Profile from "../views/Profile.vue";
 import Auth from "../views/Auth.vue";
 import Admin from "../views/Admin.vue";
 import CreatePost from "../views/CreatePost.vue";
-import BlogPreview from "../views/BlogPreview.vue";
+import PostPreview from "../views/PostPreview.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -74,11 +74,11 @@ const router = createRouter({
       },
     },
     {
-      path: "/blog-preview",
-      name: "blogPreview",
-      component: BlogPreview,
+      path: "/post-preview",
+      name: "postPreview",
+      component: PostPreview,
       meta: {
-        title: "Blog Preview",
+        title: "Post Preview",
       },
     },
     // {
